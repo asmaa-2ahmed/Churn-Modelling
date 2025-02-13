@@ -50,4 +50,4 @@ To begin using the dataset:
 
 ## Acknowledgements
 
-The dataset is provided by [Kaggle](https://www.kaggle.com/datasets/shrutimechlearn/churn-modelling) for educational and research purposes. 
+The dataset is provided by [Kaggle](https://www.kaggle.com/datasets/shrutimechlearn/churn-modelling) for educational and research purposes.
