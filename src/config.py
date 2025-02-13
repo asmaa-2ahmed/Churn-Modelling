@@ -1,22 +1,18 @@
+import os
+import joblib
+from dotenv import load_dotenv
 
+# Load .env file
+load_dotenv(override=True)
 
+# Get environment variables
+APP_Name = os.getenv('APP_NAME')
+Version = os.getenv('VERSION') 
 
+# Fetch The path
+Base_Path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+Artifacts_Path = os.path.join(Base_Path, "Artifacts")
 
-schema_extra = {
-            "example": {
-                "RowNumber": 1,
-                "CustomerId": 15634602,
-                "Surname": "Hargrave",
-                "CreditScore": 619,
-                "Geography": "France",
-                "Gender": "Female",
-                "Age": 42,
-                "Tenure": 2,
-                "Balance": 0.0,
-                "NumOfProducts": 1,
-                "HasCrCard": 1,
-                "IsActiveMember": 1,
-                "EstimatedSalary": 101348.88,
-                "Exited": 1
-            }
-        }
+# Get the pkl fiels
+preprocessor = joblib.load(os.path.join(Artifacts_Path,"preprocessor.pkl"))
+random_forest_model = joblib.load(os.path.join(Artifacts_Path, "RF_model.pkl"))
