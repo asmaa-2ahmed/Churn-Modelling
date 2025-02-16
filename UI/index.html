@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input::placeholder {
+            font-size: 12px;
+            color: gray;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .prediction-result {
+            background: #e3f2fd;
+            color: #333;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+
+        #form-container {
+            display: none;
+        }
+    </style>
+
+    <script>
+        async function checkAPIKey() {
+            const apiKey = document.getElementById("api-key").value;
+            const messageDiv = document.getElementById("message");
+            const formDiv = document.getElementById("form-container");
+            const apiKeySection = document.getElementById("api-key-section");
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/", {
+                    method: "GET",
+                    headers: { "X-API-key": apiKey }
+                });
+
+                if (response.ok) {
+                    messageDiv.innerHTML = "<span style='color: green;'>✅ API Key is valid. You can proceed.</span>";
+                    formDiv.style.display = "block";
+                    apiKeySection.style.display = "none";
+                } else {
+                    messageDiv.innerHTML = "<span style='color: red;'>❌ Invalid API Key. Please try again.</span>";
+                }
+            } catch (error) {
+                messageDiv.innerHTML = "<span style='color: red;'>⚠️ Error connecting to server.</span>";
+            }
+        }
+
+        async function submitForm() {
+            const apiKey = document.getElementById("api-key").value;
+            const resultDiv = document.getElementById("prediction-result");
+            const errorMessage = document.getElementById("error-message");
+
+            // ✅ Clear previous errors & predictions before request
+            errorMessage.innerHTML = "";
+            resultDiv.innerHTML = "";
+            resultDiv.style.display = "none";
+
+            // ✅ Input validation errors (before sending request)
+            let errors = [];
+            let creditScore = parseInt(document.getElementById("credit_score").value);
+            let age = parseInt(document.getElementById("age").value);
+            let balance = parseFloat(document.getElementById("balance").value);
+            let numOfProducts = parseInt(document.getElementById("num_of_products").value);
+            let isActiveMember = parseInt(document.getElementById("is_active_member").value);
+
+            if (creditScore < 0 || creditScore > 1000) errors.push("⚠️ Credit Score must be between 0 and 1000.");
+            if (age < 18) errors.push("⚠️ Age must be at least 18.");
+            if (balance < 500) errors.push("⚠️ Balance must be at least $500.");
+            if (numOfProducts < 0) errors.push("⚠️ Number of Products cannot be negative.");
+            if (![0, 1].includes(isActiveMember)) errors.push("⚠️ Active Member must be 0 or 1.");
+
+            if (errors.length > 0) {
+                errorMessage.innerHTML = errors.join("<br>");
+                return;
+            }
+
+            // ✅ Create customer data object
+            const customerData = {
+                CreditScore: creditScore,
+                Geography: document.getElementById("geography").value,
+                Gender: document.getElementById("gender").value,
+                Age: age,
+                Balance: balance,
+                NumOfProducts: numOfProducts,
+                IsActiveMember: isActiveMember
+            };
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/predict/forest", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-API-key": apiKey
+                    },
+                    body: JSON.stringify(customerData)
+                });
+
+                const result = await response.json();
+
+                // ✅ If API request fails, show error message under button
+                if (!response.ok) {
+                    let apiErrors = result.detail.map(err => `⚠️ ${err.loc.join(" → ")}: ${err.msg}`).join("<br>");
+                    errorMessage.innerHTML = apiErrors;
+                    return;
+                }
+
+                // ✅ If successful, show prediction & clear errors
+                errorMessage.innerHTML = "";
+                resultDiv.innerHTML = `
+    <p><strong>📊 Prediction:</strong> ${result.churn_prediction ? "✅ Likely to Churn" : "❌ Not Likely to Churn"}</p>
+    <p><strong>📉 Churn Probability:</strong> ${(result.churn_probability * 100).toFixed(2)}%</p>`;
+
+
+                resultDiv.style.display = "block";
+
+            } catch (error) {
+                // ✅ Network error handling (error under button)
+                errorMessage.innerHTML = `⚠️ Network Error: ${error.message}`;
+                resultDiv.innerHTML = "";
+                resultDiv.style.display = "none";
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 Churn Prediction</h1>
+
+        <div id="api-key-section">
+            <label for="api-key">🔑 Enter API Key:</label>
+            <input type="text" id="api-key">
+            <button onclick="checkAPIKey()">Verify</button>
+            <p id="message" class="message"></p>
+        </div>
+
+        <div id="form-container">
+            <h2>📋 Enter Customer Details</h2>
+
+            <label for="credit_score">💳 Credit Score:</label>
+            <input type="number" id="credit_score" placeholder="Score between 0 and 1000">
+
+            <label for="geography">🌍 Geography:</label>
+            <select id="geography">
+                <option value="select" selected disabled>Select a country...</option>
+                <option value="France">France</option>
+                <option value="Spain">Spain</option>
+                <option value="Germany">Germany</option>
+            </select>
+
+            <label for="gender">⚧ Gender:</label>
+            <select id="gender">
+                <option value="select" selected disabled>Select gender...</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <label for="age">👤 Age:</label>
+            <input type="number" id="age" placeholder="Minimum 18 years old">
+
+            <label for="balance">💰 Balance ($):</label>
+            <input type="number" id="balance" placeholder="Minimum $500">
+
+            <label for="num_of_products">📦 Number of Products:</label>
+            <input type="number" id="num_of_products" placeholder="Number of products with bank">
+
+            <label for="is_active_member">⚡ Active Member:</label>
+            <select id="is_active_member">
+                <option value="select" selected disabled>Select an option...</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+
+            <button onclick="submitForm()">📊 Predict Churn</button>
+
+            <p id="error-message" class="error-message"></p>
+            <p id="prediction-result" class="prediction-result"></p>
+        </div>
+    </div>
+</body>
+
+</html>

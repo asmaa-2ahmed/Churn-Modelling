@@ -6,8 +6,10 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # Get environment variables
-APP_Name = os.getenv('APP_NAME')
-Version = os.getenv('VERSION') 
+APP_NAME = os.getenv('APP_NAME')
+VERSION = os.getenv('VERSION')
+SECRET_KEY_TOKEN = os.getenv('API_SECRET_KEY')
+
 
 # Fetch The path
 Base_Path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
