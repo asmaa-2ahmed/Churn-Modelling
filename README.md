@@ -1,53 +1,130 @@
-# Churn Modelling Dataset
+# 🔍 Churn Modelling Prediction
 
-## Overview
+## 🚀 Overview
+Churn Modelling is a **machine learning project** that predicts whether a customer is likely to leave a bank (churn) based on their demographic and financial data.  
+The model is powered by **FastAPI**, with an interactive **web UI** for user-friendly predictions.  
 
-The Churn Modelling dataset is designed to assist data scientists and analysts in developing models to predict customer churn in the banking sector. Customer churn refers to the phenomenon where customers discontinue their relationship with a company. By analyzing this dataset, one can identify patterns and factors contributing to customer attrition, enabling businesses to implement strategies to retain customers.
+## 📊 Dataset Information
+The model is trained on a **customer churn dataset** containing various demographic, financial, and account-related features.  
 
-## Dataset Source
+- **Dataset Name:** Bank Customer Churn Dataset  
+- **Number of Samples:** 10,000 customers  
+- **Number of Features:** 14  
+- **Target Variable:** `Exited` (1 = Churned, 0 = Not Churned)  
 
-The dataset is available on Kaggle: [Churn Modelling Dataset](https://www.kaggle.com/datasets/shrutimechlearn/churn-modelling)
+### **🔹 Key Features**
+| Feature         | Description |
+|----------------|-------------|
+| `CustomerId`   | Unique identifier for each customer |
+| `Surname`      | Customer's last name |
+| `CreditScore`  | Customer's credit score (0-1000) |
+| `Geography`    | Country of residence (`France`, `Spain`, `Germany`) |
+| `Gender`       | Customer’s gender (`Male`, `Female`) |
+| `Age`          | Age of the customer |
+| `Balance`      | Account balance (in USD) |
+| `NumOfProducts`| Number of products held with the bank |
+| `IsActiveMember` | Whether the customer is an active member (1 = Yes, 0 = No) |
+| `Exited`       | Target variable (1 = Churned, 0 = Not Churned) |
 
-## Dataset Structure
+## 🎯 Features
+- ✅ **FastAPI-powered REST API** for churn prediction
+- ✅ **Secure API authentication** using API keys  
+- ✅ **Machine learning model trained on customer data**  
+- ✅ **User-friendly web interface** with real-time validation  
+- ✅ **Dropdowns & placeholders for an intuitive experience**  
+- ✅ **Detailed error messages & formatted predictions**  
 
-The dataset comprises 10,000 rows, each representing a unique customer, and 14 columns with the following attributes:
+## 🛠 Tech Stack
+- **Backend:** FastAPI, Python  
+- **Machine Learning:** Scikit-Learn, XGBoost  
+- **Frontend:** HTML, CSS, JavaScript  
+- **Deployment:** Git, GitHub, Uvicorn  
 
-| Column Name       | Data Type         | Description                                                                 |
-|-------------------|-------------------|-----------------------------------------------------------------------------|
-| RowNumber         | Integer           | Index of the row.                                                           |
-| CustomerId        | Integer           | Unique identifier for each customer.                                        |
-| Surname           | String            | Customer's surname.                                                         |
-| CreditScore       | Integer           | Credit score of the customer.                                               |
-| Geography         | String            | Country of residence (e.g., France, Spain, Germany).                        |
-| Gender            | String            | Gender of the customer (Male or Female).                                    |
-| Age               | Integer           | Age of the customer.                                                        |
-| Tenure            | Integer           | Number of years the customer has been with the bank.                        |
-| Balance           | Float             | Account balance of the customer.                                            |
-| NumOfProducts     | Integer           | Number of products the customer has with the bank.                          |
-| HasCrCard         | Integer (0 or 1)  | Indicates if the customer has a credit card (1 = Yes, 0 = No).              |
-| IsActiveMember    | Integer (0 or 1)  | Indicates if the customer is an active member (1 = Yes, 0 = No).            |
-| EstimatedSalary   | Float             | Estimated annual salary of the customer.                                    |
-| Exited            | Integer (0 or 1)  | Indicates if the customer has churned (1 = Yes, 0 = No).                    |
+---
 
-## Usage
+## ⚙️ Installation
 
-This dataset is suitable for:
+### **1️⃣ Clone the Repository**
+```sh
+git clone https://github.com/asmaa-2ahmed/Churn-Modelling.git
+cd Churn-Modelling
+```
 
-- **Exploratory Data Analysis (EDA):** Understanding the distribution and relationships of customer attributes.
-- **Feature Engineering:** Creating new features to improve model performance.
-- **Model Training:** Building classification models to predict customer churn.
-- **Model Evaluation:** Assessing model performance using metrics like accuracy, precision, recall, and F1-score.
+### **2️⃣ Set Up a Virtual Environment**
+```sh
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+```
 
-## Getting Started
+### **3️⃣ Install Dependencies**
+```sh
+pip install -r requirements.txt
+```
 
-To begin using the dataset:
+### **4️⃣ Set Up Environment Variables**
+Create a `.env` file and add:
+```ini
+APP_NAME="Churn Modelling"
+VERSION="1.0.0"
+API_SECRET_KEY="your_api_key_here"
+```
 
-1. **Download:** Access and download the dataset from [Kaggle](https://www.kaggle.com/datasets/shrutimechlearn/churn-modelling).
-2. **Load:** Use data analysis libraries such as Pandas in Python to load the dataset.
-3. **Analyze:** Perform exploratory data analysis to understand the data.
-4. **Preprocess:** Handle missing values, encode categorical variables, and scale numerical features as needed.
-5. **Model:** Apply machine learning algorithms to predict the 'Exited' status.
+### **5️⃣ Run the API**
+```sh
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+```
+API will be available at **http://127.0.0.1:8000** 🚀  
 
-## Acknowledgements
+---
 
-The dataset is provided by [Kaggle](https://www.kaggle.com/datasets/shrutimechlearn/churn-modelling) for educational and research purposes.
+## 📡 API Endpoints
+
+| **Method** | **Endpoint**            | **Description** |
+|-----------|------------------------|----------------|
+| `GET`     | `/`                    | Check API status |
+| `POST`    | `/predict/forest`       | Predict customer churn |
+
+**Example Request:**
+```json
+{
+    "CreditScore": 619,
+    "Geography": "France",
+    "Gender": "Female",
+    "Age": 42,
+    "Balance": 50000.0,
+    "NumOfProducts": 2,
+    "IsActiveMember": 1
+}
+```
+
+**Example Response:**
+```json
+{
+    "churn_prediction": true,
+    "churn_probability": 0.62
+}
+```
+
+---
+
+## 🌐 Web UI Preview
+![Churn UI](https://via.placeholder.com/800x400?text=Churn+Prediction+UI)  
+The **web interface** allows users to enter details and predict churn directly from the browser.
+
+---
+
+## 🤝 Contributors
+- **Asmaa Ahmed** - [GitHub](https://github.com/asmaa-2ahmed)  
+- **You!** Feel free to contribute! 🚀  
+
+## 📝 License
+This project is licensed under the **MIT License**.
+
+---
+
+## ⭐ Show Your Support!
+If you like this project, please **give it a star ⭐** on GitHub! 😊  
+```
+
+---
