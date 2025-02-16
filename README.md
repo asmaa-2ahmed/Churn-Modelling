@@ -124,7 +124,8 @@ This project is licensed under the **MIT License**.
 ---
 
 ## ⭐ Show Your Support!
-If you like this project, please **give it a star ⭐** on GitHub! 😊  
+If you like this project, please **give it a star ⭐😊**   
 ```
 
 ---
+
