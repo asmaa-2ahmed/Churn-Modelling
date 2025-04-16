@@ -184,6 +184,19 @@
                 resultDiv.style.display = "none";
             }
         }
+
+        function clearForm() {
+            document.getElementById("credit_score").value = "";
+            document.getElementById("geography").value = "select";
+            document.getElementById("gender").value = "select";
+            document.getElementById("age").value = "";
+            document.getElementById("balance").value = "";
+            document.getElementById("num_of_products").value = "";
+            document.getElementById("is_active_member").value = "select";
+            document.getElementById("error-message").innerHTML = "";
+            document.getElementById("prediction-result").style.display = "none";
+            document.getElementById("prediction-result").innerHTML = "";
+        }
     </script>
 </head>
 
@@ -193,7 +206,7 @@
 
         <div id="api-key-section">
             <label for="api-key">🔑 Enter API Key:</label>
-            <input type="text" id="api-key">
+            <input type="password" id="api-key">
             <button onclick="checkAPIKey()">Verify</button>
             <p id="message" class="message"></p>
         </div>
@@ -236,6 +249,7 @@
             </select>
 
             <button onclick="submitForm()">📊 Predict Churn</button>
+            <button onclick="clearForm()">🧹 Clear Entries</button>
 
             <p id="error-message" class="error-message"></p>
             <p id="prediction-result" class="prediction-result"></p>
