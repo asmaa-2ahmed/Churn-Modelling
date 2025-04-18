@@ -118,9 +118,6 @@ The **web interface** allows users to enter details and predict churn directly f
 - **Asmaa Ahmed** - [GitHub](https://github.com/asmaa-2ahmed)  
 - **You!** Feel free to contribute! 🚀  
 
-## 📝 License
-This project is licensed under the **MIT License**.
-
 ---
 
 ## ⭐ Show Your Support!
